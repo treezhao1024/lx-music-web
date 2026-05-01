@@ -1,0 +1,35 @@
+{
+  "name": "lx-music-web-api",
+  "version": "1.0.0",
+  "description": "LX Music Web API with Vue frontend",
+  "type": "module",
+  "scripts": {
+    "dev:api": "node src/server.js",
+    "dev:vue": "vite",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:vue\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "NODE_OPTIONS=--experimental-vm-modules node ./node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "https-proxy-agent": "^7.0.2",
+    "proxy-agent": "^8.0.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/vue": "^8.1.0",
+    "@vitejs/plugin-vue": "^4.5.0",
+    "concurrently": "^8.2.2",
+    "jest": "^30.3.0",
+    "jest-environment-node": "^30.3.0",
+    "supertest": "^7.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-compression": "^0.5.1",
+    "vue": "^3.3.11"
+  }
+}
