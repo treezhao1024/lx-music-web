@@ -1,0 +1,32 @@
+{
+  "dir": "plugins",
+  "active": "墨澜音乐源v2.3.0",
+  "fallback": true,
+  "requestTimeout": 60000,
+  "tlsVerify": false,
+  "sourceOverrides": {},
+  "plugins": {
+    "墨澜音乐源v2.3.0": {
+      "enabled": true,
+      "priority": 100
+    },
+    "lxmusic-api": {
+      "enabled": true,
+      "priority": 10,
+      "settings": {
+        "apiUrl": "https://lxmusicapi.onrender.com",
+        "apiKey": "share-v3",
+        "qualitys": {
+          "tx": [
+            "128k",
+            "320k"
+          ],
+          "wy": [
+            "128k",
+            "320k"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import musicService from '../../services/musicService.js';
-import pluginSystem from '../../services/pluginSystem.js';
+import pluginManager from '../../plugins/index.js';
 import { getAppSetting } from './useConfig.js';
 import { emit } from './useEventListeners.js';
 
@@ -13,8 +13,8 @@ async function initMusicService() {
 
   console.log('[useMusicService] Initializing music service...');
   
-  // 初始化插件系统
-  pluginSystem.initialize();
+  // 初始化插件系统（加载 plugins 目录下的所有插件）
+  await pluginManager.initialize();
 
   const apiSource = getAppSetting('common.apiSource') || 'tx';
   

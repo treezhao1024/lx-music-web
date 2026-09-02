@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import musicRouter from './routes/musicRoutes.js';
+import pluginRouter from './routes/pluginRoutes.js';
+import pluginManager from './plugins/index.js';
 import { initMusicService } from './core/useApp/useMusicService.js';
 import { startOpenAPI } from './core/useApp/useOpenAPI.js';
 import path from 'path';
@@ -14,7 +16,7 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-const PORT = process.env.PORT || process.env.TEST_PORT || 3000;
+const PORT = process.env.PORT || process.env.TEST_PORT || 3100;
 
 async function startServer() {
   await initDatabase();
@@ -24,6 +26,7 @@ async function startServer() {
   app.use(express.json());
 
   app.use('/api/music', musicRouter);
+  app.use('/api/plugins', pluginRouter);
   app.use('/downloads', express.static(path.join(__dirname, '../downloads')));
   app.use(express.static(path.join(__dirname, '../dist')));
 
@@ -48,6 +51,12 @@ async function startServer() {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist', 'index.html'));
   });
+
+  try {
+    await pluginManager.initialize();
+  } catch (error) {
+    console.error('Failed to initialize plugins:', error.message);
+  }
 
   try {
     await initMusicService();

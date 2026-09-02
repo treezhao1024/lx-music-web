@@ -81,7 +81,7 @@
           
           try {
             const source = this.currentTab === 'all' ? 'tx' : this.currentTab;
-            const url = `http://localhost:3000/api/music/search?q=${encodeURIComponent(this.searchQuery)}&page=1&limit=100&source=${source}`;
+            const url = `http://localhost:3100/api/music/search?q=${encodeURIComponent(this.searchQuery)}&page=1&limit=100&source=${source}`;
             
             console.log('Request URL:', url);
             

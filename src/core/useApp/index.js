@@ -8,7 +8,7 @@ export default async function useApp() {
   console.log('[useApp] Initializing...');
 
   const config = {
-    PORT: process.env.PORT || 3000,
+    PORT: process.env.PORT || 3100,
     API_SOURCE: process.env.API_SOURCE || 'kg',
     PROXY_ENABLE: process.env.PROXY_ENABLE === 'true',
     PROXY_HOST: process.env.PROXY_HOST || '',

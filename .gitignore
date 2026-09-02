@@ -1,0 +1,4 @@
+node_modules/
+
+# 机器本地的 Qoder 权限记录，含其它项目的命令历史，不入库
+.qoder/settings.local.json

@@ -1,4 +1,4 @@
-import pluginSystem from './pluginSystem.js';
+import pluginManager from '../plugins/index.js';
 
 const SOURCE_MAP = {
   tx: () => import('../sources/tx/musicSearch.js'),
@@ -37,23 +37,17 @@ const musicService = {
   },
 
   async getMusicUrl(songInfo, quality = '320k') {
-    const source = songInfo.source;
-    
-    console.log('[MusicService] getMusicUrl() called:', { songInfo, quality, source });
-    
-    if (!globalThis.lx) {
-      throw new Error('Plugin system not initialized. Call pluginSystem.initialize() first.');
-    }
-    
-    console.log('[MusicService] Calling sendRequestEvent("musicUrl",', source, ')...');
-    
-    const result = await globalThis.lx.sendRequestEvent('musicUrl', source, {
+    const source = songInfo?.source || 'tx';
+
+    console.log('[MusicService] getMusicUrl():', { source, quality });
+
+    const result = await pluginManager.request('musicUrl', source, {
       type: quality,
-      musicInfo: songInfo
+      musicInfo: songInfo,
     });
-    
+
     console.log('[MusicService] getMusicUrl() result:', typeof result === 'string' ? result : JSON.stringify(result));
-    
+
     return result;
   },
 };

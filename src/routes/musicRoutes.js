@@ -1,6 +1,6 @@
 import express from 'express';
 import musicService from '../services/musicService.js';
-import pluginSystem from '../services/pluginSystem.js';
+import pluginManager from '../plugins/index.js';
 import { downloadFile, downloadAndSaveSong } from '../services/downloadService.js';
 import { getLyric } from '../services/lyricService.js';
 import { getAllLovedSongs, getSongById, saveSong, deleteSong } from '../services/databaseService.js';
@@ -60,7 +60,8 @@ router.get('/url', async (req, res) => {
   try {
     const { songId, strMediaMid, songmid, source, quality } = req.query;
     
-    const availableSources = pluginSystem.getAvailableSources();
+    await pluginManager.initialize();
+    const availableSources = pluginManager.getAvailableSources();
     if (source && !availableSources[source]) {
       return res.status(400).json({ 
         error: `Source "${source}" is not supported. Available sources: ${Object.keys(availableSources).join(', ')}` 
@@ -97,16 +98,19 @@ router.get('/url', async (req, res) => {
   }
 });
 
-router.get('/sources', (req, res) => {
+router.get('/sources', async (req, res) => {
   try {
-    const sources = pluginSystem.getAvailableSources();
+    await pluginManager.initialize();
+    const sources = pluginManager.getAvailableSources();
     res.json({
       success: true,
-      sources: Object.values(sources).map(source => ({
+      sources: Object.entries(sources).map(([id, source]) => ({
+        id,
         name: source.name,
         type: source.type,
         actions: source.actions,
-        qualitys: source.qualitys
+        qualitys: source.qualitys,
+        pluginId: source.pluginId
       }))
     });
   } catch (error) {
