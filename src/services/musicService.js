@@ -3,6 +3,7 @@ import pluginManager from '../plugins/index.js';
 const SOURCE_MAP = {
   tx: () => import('../sources/tx/musicSearch.js'),
   wy: () => import('../sources/wy/musicSearch.js'),
+  kw: () => import('../sources/kw/musicSearch.js'),
 };
 
 const musicService = {

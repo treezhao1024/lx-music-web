@@ -4,7 +4,7 @@
 
 ## 功能特性
 
-- 多音源搜索：支持腾讯音乐（TX）和网易云音乐（WY）
+- 多音源搜索：支持腾讯音乐（TX）、网易云音乐（WY）和酷我音乐（KW）
 - 音乐搜索：支持分页搜索，聚合模式可一次搜索多音源
 - 音乐下载：将歌曲下载到本地，支持 128k / 320k 音质
 - 在线播放：下载后可直接在线播放
@@ -49,11 +49,16 @@
 │   │   │   ├── musicSearch.js  # 搜索
 │   │   │   ├── lyric.js        # 歌词
 │   │   │   └── request.js      # HTTP 请求
-│   │   └── wy/             # 网易云音乐音源
-│   │       ├── musicSearch.js  # 搜索（eapi 加密请求）
-│   │       ├── lyric.js        # 歌词
-│   │       ├── request.js      # HTTPS 请求
-│   │       └── crypto.js       # eapi 加密/解密
+│   │   ├── wy/             # 网易云音乐音源
+│   │   │   ├── musicSearch.js  # 搜索（eapi 加密请求）
+│   │   │   ├── lyric.js        # 歌词
+│   │   │   ├── request.js      # HTTPS 请求
+│   │   │   └── crypto.js       # eapi 加密/解密
+│   │   └── kw/             # 酷我音乐音源
+│   │       ├── musicSearch.js  # 搜索
+│   │       ├── lyric.js        # 歌词（zlib 解压 + XOR 解密 + gb18030 解码）
+│   │       ├── request.js      # HTTP 请求（保留原始二进制响应）
+│   │       └── util.js         # 歌手名/HTML 实体处理、逐字歌词解析
 │   ├── core/useApp/
 │   │   ├── useMusicService.js  # 音乐服务初始化
 │   │   ├── useOpenAPI.js       # OpenAPI 路由注册
@@ -72,7 +77,7 @@
 │   └── *.js                    # 其它 lx-music 插件脚本
 ├── downloads/                  # 下载目录
 │   ├── songs_db.json           # 收藏数据库
-│   └── tx/ | wy/               # 按音源分类的歌曲文件
+│   └── tx/ | wy/ | kw/         # 按音源分类的歌曲文件
 ├── vite.config.js              # Vite 配置
 ├── package.json
 └── src/client/index.html        # 前端入口 HTML
@@ -83,17 +88,17 @@
 ### 音乐搜索
 
 ```
-GET /api/music/search?q=关键词&page=1&limit=30&source=tx|wy|all
+GET /api/music/search?q=关键词&page=1&limit=30&source=tx|wy|kw|all
 ```
 
 - `q`: 搜索关键词
-- `source`: 音源（`tx` 腾讯 / `wy` 网易云 / `all` 聚合）
+- `source`: 音源（`tx` 腾讯 / `wy` 网易云 / `kw` 酷我 / `all` 聚合）
 - 返回 `{ list, total, allPage, limit, source }`
 
 ### 获取音乐 URL
 
 ```
-GET /api/music/url?songId=xxx&source=tx|wy&quality=320k
+GET /api/music/url?songId=xxx&source=tx|wy|kw&quality=320k
 ```
 
 由插件系统按配置路由到具体插件获取播放链接。
@@ -109,7 +114,7 @@ GET /api/music/sources
 ### 下载音乐
 
 ```
-GET /api/music/download?songId=xxx&source=tx|wy&name=歌名&singer=歌手
+GET /api/music/download?songId=xxx&source=tx|wy|kw&name=歌名&singer=歌手
 ```
 
 将歌曲下载到 `downloads/{source}/` 目录，返回文件路径。
@@ -118,7 +123,7 @@ GET /api/music/download?songId=xxx&source=tx|wy&name=歌名&singer=歌手
 
 ```
 POST /api/music/love
-{ "song": { songId, name, singer, source, ... }, "source": "tx|wy" }
+{ "song": { songId, name, singer, source, ... }, "source": "tx|wy|kw" }
 ```
 
 下载歌曲和歌词，并保存到数据库。
@@ -132,7 +137,7 @@ GET /api/music/loved
 ### 歌词
 
 ```
-GET /api/music/lyric?songId=xxx&source=tx|wy&name=歌名&singer=歌手
+GET /api/music/lyric?songId=xxx&source=tx|wy|kw&name=歌名&singer=歌手
 ```
 
 ### 插件管理
@@ -158,7 +163,7 @@ GET  /api/config
 
 ```
 POST /api/search
-{ "query": "关键词", "page": 1, "limit": 30, "source": "tx|wy" }
+{ "query": "关键词", "page": 1, "limit": 30, "source": "tx|wy|kw" }
 ```
 
 ## 快速开始

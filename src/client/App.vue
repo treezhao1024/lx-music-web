@@ -66,6 +66,7 @@
                 <div class="song-tags">
                   <span v-if="song.source === 'tx'" class="tag tag-tx">TX</span>
                   <span v-if="song.source === 'wy'" class="tag tag-wy">WY</span>
+                  <span v-if="song.source === 'kw'" class="tag tag-kw">KW</span>
                   <span v-if="song._types && (song._types['flac'] || song._types['320k'] || song._types['flac24bit'])" class="tag tag-sq">SQ</span>
                 </div>
               </div>
@@ -257,6 +258,7 @@ export default {
       tabs: [
         { label: 'TX Music', value: 'tx' },
         { label: 'NetEase', value: 'wy' },
+        { label: 'Kuwo', value: 'kw' },
         { label: 'Aggregated', value: 'all' }
       ],
       currentSong: null,
@@ -340,19 +342,14 @@ export default {
       
       try {
         if (this.currentTab === 'all') {
-          const [txRes, wyRes] = await Promise.all([
-            fetch(`/api/music/search?q=${encodeURIComponent(this.searchQuery)}&page=1&limit=50&source=tx`),
-            fetch(`/api/music/search?q=${encodeURIComponent(this.searchQuery)}&page=1&limit=50&source=wy`)
-          ]);
-          
-          const txData = await txRes.json();
-          const wyData = await wyRes.json();
-          
-          this.searchResults = [
-            ...(txData.list || []),
-            ...(wyData.list || [])
-          ];
-          this.total = (txData.total || 0) + (wyData.total || 0);
+          const sources = this.tabs.filter(tab => tab.value !== 'all').map(tab => tab.value);
+          const results = await Promise.all(sources.map(source =>
+            fetch(`/api/music/search?q=${encodeURIComponent(this.searchQuery)}&page=1&limit=50&source=${source}`)
+              .then(res => res.json())
+          ));
+
+          this.searchResults = results.flatMap(data => data.list || []);
+          this.total = results.reduce((sum, data) => sum + (data.total || 0), 0);
           this.allPage = 1;
         } else {
           const source = this.currentTab;
@@ -1189,6 +1186,10 @@ body {
 
 .tag-wy {
   background-color: #e91e63;
+}
+
+.tag-kw {
+  background-color: #009688;
 }
 
 .song-artist {

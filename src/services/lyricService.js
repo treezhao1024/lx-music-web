@@ -3,6 +3,7 @@ import { parseLyric as parseLyricText } from '../utils/lyricParser.js';
 const SOURCE_LYRIC_MAP = {
   tx: () => import('../sources/tx/lyric.js'),
   wy: () => import('../sources/wy/lyric.js'),
+  kw: () => import('../sources/kw/lyric.js'),
 };
 
 export async function getLyric(songId, strMediaMid, songmid, source = 'tx') {
