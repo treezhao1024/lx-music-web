@@ -1,11 +1,15 @@
 {
   "dir": "plugins",
-  "active": "墨澜音乐源v2.3.0",
+  "active": "杰翔音乐源",
   "fallback": true,
   "requestTimeout": 60000,
   "tlsVerify": false,
   "sourceOverrides": {},
   "plugins": {
+    "杰翔音乐源": {
+      "enabled": true,
+      "priority": 100
+    },
     "墨澜音乐源v2.3.0": {
       "enabled": true,
       "priority": 100
