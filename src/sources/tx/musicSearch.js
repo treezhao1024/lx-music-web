@@ -89,6 +89,7 @@ const txMusicSearch = async (str, page, limitNum) => {
       'Referer': 'https://y.qq.com',
     },
     body: JSON.stringify({
+      comm: { ct: '19', cv: '1859', uin: '0' },
       req_1: {
         module: 'music.search.SearchCgiService',
         method: 'DoSearchForQQMusicDesktop',
